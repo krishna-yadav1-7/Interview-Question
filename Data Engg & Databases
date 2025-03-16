@@ -1,0 +1,45 @@
+* SQL & Database Design
+
+1 Write a SQL query to find the nth highest salary from an employee table.
+
+2 How do you optimize a slow SQL query?
+
+3 Explain the difference between INNER JOIN, LEFT JOIN, RIGHT JOIN, and FULL JOIN.
+
+4 How would you design a schema for a ride-sharing application like Uber?
+
+5 What is the difference between denormalization and normalization?
+
+6 Write a SQL query to remove duplicate rows while keeping one occurrence.
+
+7 Explain partitioning vs. sharding in databases.
+
+8 What is the difference between OLTP and OLAP?
+
+9 How do you index a database table for better performance?
+
+10 How do you handle slow queries in a large dataset?
+------------------------------------------------------------
+
+Data Modeling & ETL (Extract, Transform, Load)
+
+1 What are fact and dimension tables in a data warehouse?
+
+2 How do you design a data pipeline for processing real-time streaming data?
+
+3 What are the different types of Slowly Changing Dimensions (SCDs)?
+
+4 Explain the Lambda and Kappa architectures in data processing.
+
+5 How would you handle schema evolution in ETL pipelines?
+
+6 What is the difference between batch processing and stream processing?
+
+7 How do you optimize ETL pipelines for large datasets?
+
+8 What are some best practices for handling duplicate data in ETL?
+
+9 How do you track data lineage and ensure data quality in ETL
+
+10 What are orchestration tools like Apache Airflow and how do they work?
+
