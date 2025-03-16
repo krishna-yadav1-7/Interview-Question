@@ -1,0 +1,19 @@
+1) Write a query to find the second highest salary in an employee table.
+
+2) Fetch all employees whose names contain the letter "a" exactly twice.
+
+3) How do you retrieve only duplicate records from a table?
+
+4) Write a query to calculate the running total of sales by date.
+
+5) Find employees who earn more than the average salary in their department.
+
+6) Write a query to find the most frequently occurring value in a column.
+
+7) Fetch records where the date is within the last 7 days from today.
+
+8) Write a query to count how many employees share the same salary.
+
+9) How do you fetch the top 3 records for each group in a table?
+
+10) Retrieve products that were never sold (hint: use LEFT JOIN).
