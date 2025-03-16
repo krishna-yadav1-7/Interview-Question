@@ -19,3 +19,17 @@ Challenging Level:
 9 Write a query to find gaps in sequential numbering within a table.
 
 10 Split a comma-separated string into individual rows using SQL.
+
+
+
+Advanced Problem-Solving:
+
+1 Rank products by sales in descending order for each region.
+
+2 Fetch all employees whose salaries fall within the top 10% of their department.
+
+3 Identify orders placed during business hours (e.g., 9 AM to 6 PM).
+
+4 Write a query to get the count of users active on both weekdays and weekends.
+
+5 Retrieve customers who made purchases across at least three different categories.
