@@ -1,0 +1,21 @@
+Challenging Level:
+
+1 Retrieve customers who made their first purchase in the last 6 months.
+
+2 How do you pivot a table to convert rows into columns?
+
+3 Write a query to calculate the percentage change in sales month-over-month.
+
+4 Find the median salary of employees in a table.
+
+5 Fetch all users who logged in consecutively for 3 days or more.
+
+6 Write a query to delete duplicate rows while keeping one occurrence.
+
+7 Create a query to calculate the ratio of sales between two categories.
+
+8 How would you implement a recursive query to generate a hierarchical structure?
+
+9 Write a query to find gaps in sequential numbering within a table.
+
+10 Split a comma-separated string into individual rows using SQL.
