@@ -1,0 +1,128 @@
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import collect_list
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("GroupByExample").getOrCreate()
+
+# Create DataFrame
+input_data = [("a", "aa", 1), ("a", "aa", 2), ("b", "bb", 3), ("b", "bb", 4), ("b", "bb", 5)]
+columns = ["col1", "col2", "col3"]
+df = spark.createDataFrame(input_data, columns)
+
+# Perform groupBy and collect_list operation
+result_df = df.groupBy("col1", "col2").agg(collect_list("col3").alias("col3"))
+
+# Show result
+result_df.show(truncate=False)
+
+
+==========================================================================
+
+
+input data:
+col1 col2 col3
+a aa 1 
+a aa 2 
+b bb 3 
+b bb 4 
+b bb 5 
+
+
+
+outputdata:
+col1 col2 col3 
+a aa [1,2] 
+b bb [3,4,5]
+
+
+from pyspark.sql import SparkSession
+from pyspark.sql.window import Window
+from pyspark.sql.functions import col, last
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("FillNullsExample").getOrCreate()
+
+# Create DataFrame
+input_data = [("HR", 1, 20000), ("HR", 2, None), ("FINANCE", 1, 30000), ("FINANCE", 2, None), ("FINANCE", 3, None)]
+columns = ["DEPT", "EMP_ID", "Salary"]
+df = spark.createDataFrame(input_data, columns)
+
+# Define window specification
+window_spec = Window.partitionBy("DEPT").orderBy("EMP_ID").rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+# Fill null values using last non-null value
+result_df = df.withColumn("Salary", last("Salary", ignorenulls=True).over(window_spec))
+
+# Show result
+result_df.show(truncate=False)
+
+
+===========================================================================================
+TEAMA TEAMB WINS 
+
+IND PAK IND 
+SA  AU AU 
+PAK SA PAK 
+IND ENG IND 
+NZ  SA NZ
+
+
+TEAMS WINS LOSS
+PAK 1 1 
+NZ  1 0 
+ENG 0 1 
+IND 2 0 
+SA  0 3 
+AU  1 0
+
+
+
+
+SELECT TEAM, 
+       COUNT(CASE WHEN TEAM = WINS THEN 1 END) AS WINS, 
+       COUNT(CASE WHEN TEAM != WINS THEN 1 END) AS LOSS 
+FROM (
+    SELECT TEAMA AS TEAM, WINS FROM matches 
+    UNION ALL 
+    SELECT TEAMB AS TEAM, WINS FROM matches
+) AS combined 
+GROUP BY TEAM;
+
+==============
+
+from pyspark.sql import SparkSession
+
+# Initialize Spark session
+spark = SparkSession.builder.appName("MatchResults").getOrCreate()
+
+# Create DataFrame
+input_data = [("IND", "PAK", "IND"), ("SA", "AU", "AU"), ("PAK", "SA", "PAK"), ("IND", "ENG", "IND"), ("NZ", "SA", "NZ")]
+columns = ["TEAMA", "TEAMB", "WINS"]
+df = spark.createDataFrame(input_data, columns)
+
+# Register DataFrame as SQL table
+df.createOrReplaceTempView("matches")
+
+# SQL query to calculate wins and losses
+query = """
+SELECT TEAM, 
+       COUNT(CASE WHEN TEAM = WINS THEN 1 END) AS WINS, 
+       COUNT(CASE WHEN TEAM != WINS THEN 1 END) AS LOSS 
+FROM (SELECT TEAMA AS TEAM, WINS FROM matches 
+      UNION ALL 
+      SELECT TEAMB AS TEAM, WINS FROM matches) AS combined 
+GROUP BY TEAM
+"""
+
+# Execute SQL query
+result_df = spark.sql(query)
+
+# Show result
+result_df.show(truncate=False)
+
+=====================================================================================================================
+
+
+
+
+
