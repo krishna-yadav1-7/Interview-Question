@@ -1,0 +1,39 @@
+
+
+
+
+
+
+name, age , city
+
+
+df.groupBy("city").agg(avg(col("age)).show()
+
+
+
+select * from table
+where age =(select avg(age) as Avg_age from table )
+
+
+
+
+
+window = Window.partionBy("city")
+
+df.withColumn("avg_city_age, avg("age").over(window)).show()
+
+
+
+
+select *,
+	avg (over(partition by city))as Avg_city_age
+
+from table
+
+
+
+-------------------------------------------
+
+
+
+ 
