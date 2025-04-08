@@ -1,0 +1,38 @@
+
+data = [
+	id, date,        amount
+    ('B1', '2023-01-01', 1000),
+    ('B1', '2023-02-01', 800),
+    ('B1', '2023-03-01', 400),
+    ('B1', '2023-04-01', 1000),
+    ('B2', '2023-01-15', 500),
+    ('B2', '2023-02-15', 200),
+]
+
+
+win = Window.partitionBy("id").orderBy("date").row_between(-2,0)
+
+df1 =df.withColumn("avg_value"),avg(select("amount").over(win))\
+
+
+df2 = df1.withColumn("redflag", when("amount") < select(("avg_value) * 0.5), "Red")\
+	 .otherwise("amount")
+
+
+-----------------------------------------------------------------------------------------
+table = transaction (user_id, t_id, t_amount, t_date)
+
+ select * from trans
+ order by  t_amount desc
+ limit 2 
+
+
+with cte1 as
+(select *
+
+rank(amount) over(order by ) as top_transaction
+
+from transaction)
+
+select * from cte1
+limit 2
