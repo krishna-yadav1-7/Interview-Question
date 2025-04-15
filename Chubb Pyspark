@@ -33,54 +33,75 @@ outputdata:
 col1 col2 col3 
 a aa [1,2] 
 b bb [3,4,5]
+--------------------------------------------------------------------------------------------------------------------------------
+Q2) "Given a PySpark DataFrame with missing (null) values in a column, 
+how would you fill the nulls with the last known non-null value within a group, ordered by a specific column (like a time or ID column)?"
 
+##Input Data 
++--------+-------+------+
+|DEPT    |EMP_ID |Salary|
++--------+-------+------+
+|HR      |1      |20000 |
+|HR      |2      |null  |
+|FINANCE |1      |30000 |
+|FINANCE |2      |null  |
+|FINANCE |3      |null  |
++--------+-------+------+
+
+#Solution:
 
 from pyspark.sql import SparkSession
 from pyspark.sql.window import Window
 from pyspark.sql.functions import col, last
 
 # Initialize Spark session
+
 spark = SparkSession.builder.appName("FillNullsExample").getOrCreate()
 
-# Create DataFrame
-input_data = [("HR", 1, 20000), ("HR", 2, None), ("FINANCE", 1, 30000), ("FINANCE", 2, None), ("FINANCE", 3, None)]
+input_data = [("HR", 1, 20000), 
+              ("HR", 2, None), 
+              ("FINANCE", 1, 30000), 
+              ("FINANCE", 2, None), 
+              ("FINANCE", 3, None)]
+
 columns = ["DEPT", "EMP_ID", "Salary"]
+
 df = spark.createDataFrame(input_data, columns)
 
-# Define window specification
-window_spec = Window.partitionBy("DEPT").orderBy("EMP_ID").rowsBetween(Window.unboundedPreceding, Window.currentRow)
+Window_spec = Window.partitionBy("DEPT").orderBy("EMP_ID").rowsBetween(Window.unboundedPreceding, Window.currentRow)
 
-# Fill null values using last non-null value
 result_df = df.withColumn("Salary", last("Salary", ignorenulls=True).over(window_spec))
-
-# Show result
 result_df.show(truncate=False)
 
+### OUTPUT
+
++--------+-------+------+
+|DEPT    |EMP_ID |Salary|
++--------+-------+------+
+|FINANCE |1      |30000 |
+|FINANCE |2      |30000 |
+|FINANCE |3      |30000 |
+|HR      |1      |20000 |
+|HR      |2      |20000 |
++--------+-------+------+
 
 ===========================================================================================
-TEAMA TEAMB WINS 
+##Input
 
-IND PAK IND 
-SA  AU AU 
-PAK SA PAK 
-IND ENG IND 
-NZ  SA NZ
+TEAMA  TEAMB  WINS
 
+IND     PAK   IND 
+SA      AU    AU 
+PAK     SA    PAK 
+IND     ENG   IND 
+NZ      SA    NZ
 
-TEAMS WINS LOSS
-PAK 1 1 
-NZ  1 0 
-ENG 0 1 
-IND 2 0 
-SA  0 3 
-AU  1 0
-
-
+##Solution
 
 
 SELECT TEAM, 
-       COUNT(CASE WHEN TEAM = WINS THEN 1 END) AS WINS, 
-       COUNT(CASE WHEN TEAM != WINS THEN 1 END) AS LOSS 
+       COUNT(CASE WHEN TEAM A = WINS THEN 1 END) AS WINS, 
+       COUNT(CASE WHEN TEAM B != WINS THEN 1 END) AS LOSS 
 FROM (
     SELECT TEAMA AS TEAM, WINS FROM matches 
     UNION ALL 
@@ -88,7 +109,51 @@ FROM (
 ) AS combined 
 GROUP BY TEAM;
 
-==============
+============================================
+## Alternate Option
+
+-- Step 1: Create CTEs for wins and losses
+WITH wins_cte AS (
+    SELECT WINS AS TEAM, COUNT(*) AS WINS
+    FROM Matches
+    GROUP BY WINS
+),
+losses_cte AS (
+    SELECT CASE 
+             WHEN WINS = TEAMA THEN TEAMB
+             ELSE TEAMA 
+           END AS TEAM,
+           COUNT(*) AS LOSS
+    FROM Matches
+    WHERE WINS IS NOT NULL
+    GROUP BY CASE 
+               WHEN WINS = TEAMA THEN TEAMB
+               ELSE TEAMA 
+             END
+)
+
+-- Step 2: Full Outer Join the two CTEs
+SELECT 
+  COALESCE(w.TEAM, l.TEAM) AS TEAMS,
+  COALESCE(w.WINS, 0) AS WINS,
+  COALESCE(l.LOSS, 0) AS LOSS
+FROM wins_cte w
+FULL OUTER JOIN losses_cte l
+  ON w.TEAM = l.TEAM
+ORDER BY TEAMS;
+
+
+## Output
+
+TEAMS WINS    LOSS
+PAK    1       1 
+NZ     1       0 
+ENG    0       1 
+IND    2       0 
+SA     0       3 
+AU     1       0
+
+========================================================================================
 
 from pyspark.sql import SparkSession
 
