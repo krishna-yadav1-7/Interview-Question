@@ -1,0 +1,35 @@
+Assume orders.csv file stored in /user/spark-data2/spark-data/practice4/q4/
+
+This csv file contains order_id_id,customer_id,order_status,
+
+Take the records which have order status as COMPLETE
+
+Customers having orders count >4
+
+Sort the records based on number of orders placed by customer
+
+Output file contains customer_id, count_of_order
+
+Output  file format json and output file path -> /user/spark-data2/spark-data/practice4/q4/orders/output
+
+-----------------------------------------------------------
+
+val spark = sparkSession.builder().appName("AppName).getOrCreate()
+
+val df = spark.read.format("csv")
+		.option("header","true")
+		.option("inferSchema","True")
+		.option("mode","PERMISSIVE")
+		.load("/user/spark-data2/spark-data/practice4/q4/")
+
+df.select(col("order_id"),(col("customer_id"),col(order_status") ==="COMPLETE"))
+	.groupBy("order_id")
+	.having(count)> 4
+	.sort(
+
+
+df.write("json")
+	.option("multiline","true")
+
+
+
